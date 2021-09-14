@@ -1,55 +1,14 @@
 {
-  "AP": {
-    "value": -1,
-    "default": 1
-  },
-  "ip": {
-    "value": "",
-    "default": "192.168.4.1"
-  },
-  "gateway": {
-    "value": "",
-    "default": "192.168.4.1"
-  },
-  "dhcp": {
-    "value": -1,
-    "default": 1
-  },
-  "ssid": {
-    "value": "",
-    "default": "ESTMET-AP"
-  },
-  "password": {
-    "value": "",
-    "default": "12345678"
-  },
-  "user": {
-    "name": {
-      "value": "",
-      "default": "admin"
-    },
-    "password": {
-      "value": "",
-      "default": "admin"
-    }
-  },
-  "sensors": {
-    "readFreq": {
-      "value": 0,
-      "default": 15
-    },
-    "stateCheck": 0,
-    "saveFreq": {
-      "value": 0,
-      "default": 15
-    },
-    "dataTransmission": {
-      "value": 0,
-      "default": 15
-    },
-    "memoryWarning": {
-      "value": 0,
-      "default": 0.8
-    }
+  "ip": "192.168.4.1",
+  "ipMask": "255.255.255.0",
+  "ssid": "station-0",
+  "password": "appassword",
+  "hostname": "station-0",
+  "connectionMode": "AP",
+  "Settings": {
+    "generalReadDelay": 0,
+    "precipitationReadDelay": 0,
+    "username": "admin",
+    "password": "adminpassword"
   }
 }
