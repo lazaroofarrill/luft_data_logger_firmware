@@ -375,6 +375,7 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
             data += pressureRead();
             data += timeRead();
             logData(data);
+
             break;
         case WStype_TEXT:
             data = String((const char *) payload);
