@@ -9,7 +9,7 @@ TaskHandle_t monitorTask = NULL;
 u_long LOG_INTERVAL = 0;
 
 void monitorSetup() {
-    LOG_INTERVAL = (long) getNumberVal(doc["sensors"]["readFreq"]) * 60 * 1000;
+    LOG_INTERVAL = (long) getNumberVal(globalConfiguration["sensors"]["readFreq"]) * 60 * 1000;
     Serial.print("Read freq is");
     Serial.println(LOG_INTERVAL);
     humidityStart();

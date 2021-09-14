@@ -4,7 +4,7 @@
 
 #include "FileSystem/fileSystem.h"
 
-DynamicJsonDocument doc = DynamicJsonDocument(1024);
+DynamicJsonDocument globalConfiguration = DynamicJsonDocument(1024);
 
 
 void initFileSystem() {
@@ -30,7 +30,7 @@ void saveConfig() {
         return;
     }
 
-    serializeJsonPretty(doc, file);
+    serializeJsonPretty(globalConfiguration, file);
     file.close();
 }
 
@@ -41,7 +41,7 @@ void loadConf() {
         return;
     }
 
-    DeserializationError error = deserializeJson(doc, file);
+    DeserializationError error = deserializeJson(globalConfiguration, file);
     file.close();
     if (error) {
         Serial.println("error loading json file");

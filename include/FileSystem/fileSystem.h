@@ -9,7 +9,7 @@
 #include "SPIFFS.h"
 #include "ArduinoJson.h"
 
-extern DynamicJsonDocument doc;
+extern DynamicJsonDocument globalConfiguration;
 
 
 void initFileSystem();

@@ -54,39 +54,24 @@ void initWifi() {
     String ssid = "";
     String password = "";
 
-    ssid = getStringVal(doc["ssid"]);
-    password = getStringVal(doc["password"]);
+    ssid = globalConfiguration["ssid"].as<String>();
+    password = globalConfiguration["password"].as<String>();
 
-    Serial.print("SSDI is ");
+    Serial.print("SSID is ");
     Serial.println(ssid);
     Serial.print("Password is ");
     Serial.println(password);
 
-    int networkCount = WiFi.scanNetworks();
-
-    if (networkCount > 0) {
-        Serial.printf("found %d networks\n", networkCount);
-    }
-    int count = 0;
-    for (int i = 0; i < networkCount; i++) {
-        if (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) continue;
-        if (count > 0) networks += ",";
-        networks += "\"" + WiFi.SSID(i) + "\"";
-        count++;
-        Serial.println(WiFi.SSID(i));
-    }
-    networks += "]";
-
-    if (!getBooleanVal(doc["AP"])) {
+    if (globalConfiguration["connectionMode"].as<String>().indexOf("AP") == -1) {
         Serial.print("Connecting to ");
         Serial.println(ssid);
 
         Serial.print("\nStation IP Address:");
-        if (!getBooleanVal(doc["dhcp"])) {
+        if (globalConfiguration["dhcp"]) {
             IPAddress address = IPAddress();
             IPAddress gateway = IPAddress();
-            if (address.fromString(getStringVal(doc["ip"])) &&
-                gateway.fromString(getStringVal(doc["gateway"]))) {
+            if (address.fromString(globalConfiguration["ip"].as<String>()) &&
+                gateway.fromString(globalConfiguration["gateway"].as<String>())) {
 
                 WiFi.config(address, gateway, IPAddress(255, 255, 255, 0));
             }
@@ -99,15 +84,15 @@ void initWifi() {
         }
         Serial.println();
         delay(500);
-        WiFi.setHostname("estmet-01");
+        WiFi.setHostname(globalConfiguration["hostname"]);
         Serial.println(WiFi.getHostname());
         Serial.println(WiFi.localIP());
     } else {
         Serial.println("Setting up Hotspot");
         IPAddress address = IPAddress();
         IPAddress gateway = IPAddress();
-        if (address.fromString(getStringVal(doc["ip"])) &&
-            gateway.fromString(getStringVal(doc["gateway"]))) {
+        if (address.fromString(globalConfiguration["ip"].as<String>()) &&
+            gateway.fromString(globalConfiguration["gateway"].as<String>())) {
             WiFi.softAPConfig(address, gateway, IPAddress(255, 255, 255, 0));
         }
 
@@ -116,42 +101,6 @@ void initWifi() {
         Serial.print("AP IP address: ");
         Serial.println(myIP);
     }
-}
-
-
-void configNet() {
-    if (!authControl())
-        return;
-    Serial.println(server.uri());
-    Serial.println(server.method());
-    for (int i = 0; i < server.headers(); i++) {
-        Serial.printf("%s: %s\n", server.headerName(i).c_str(), server.header(i).c_str());
-    }
-    for (int i = 0; i < server.args(); i++) {
-        Serial.printf("%s: %s\n", server.argName(i).c_str(), server.arg(i).c_str());
-    }
-
-    if (server.hasArg("plain")) {
-        DynamicJsonDocument request(512);
-
-        DeserializationError error = deserializeJson(request, server.arg("plain"));
-        if (error) {
-            Serial.println(error.c_str());
-        }
-
-        doc["ssid"]["value"] = request["ssid"].as<String>();
-        doc["password"]["value"] = request["password"].as<String>();
-        doc["AP"]["value"] = request["mode"].as<bool>();
-        doc["dhcp"]["value"] = request["dhcp"].as<bool>();
-
-        doc["ip"]["value"] = request["ip"].as<String>();
-        doc["gateway"]["value"] = request["gateway"].as<String>();
-
-        saveConfig();
-    }
-    passCors();
-    Serial.println("network changed");
-    server.send(200, "text/plain", "Network configuration changed");
 }
 
 
@@ -194,8 +143,8 @@ void authenticate() {
         Serial.println(error.c_str());
     }
 
-    String user = getStringVal(doc["user"]["name"]);
-    String pswd = getStringVal(doc["user"]["password"]);
+    String user = globalConfiguration["Settings"]["username"];
+    String pswd = globalConfiguration["Settings"]["password"];
 
 
     if (user.equals(request["name"].as<String>()) &&
@@ -239,7 +188,7 @@ void initWebServer() {
                 Serial.println(error.c_str());
             }
 
-            doc["sensors"]["readFreq"]["value"] = request["frequency"].as<int>();
+            globalConfiguration["sensors"]["readFreq"]["value"] = request["frequency"].as<int>();
 
             saveConfig();
             passCors();
@@ -261,7 +210,6 @@ void initWebServer() {
         File log = SD.open(path, FILE_READ);
         if (!log) {
             Serial.println("couldn't open log for reading");
-            ESP.restart();
             return;
         }
         passCors();
@@ -415,8 +363,8 @@ void configUser() {
             Serial.println(error.c_str());
         }
 
-        doc["user"]["name"]["value"] = request["name"].as<String>();
-        doc["user"]["password"]["value"] = request["password"].as<String>();
+        globalConfiguration["user"]["name"]["value"] = request["name"].as<String>();
+        globalConfiguration["user"]["password"]["value"] = request["password"].as<String>();
 
         saveConfig();
         passCors();
