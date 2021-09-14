@@ -177,26 +177,6 @@ void initWebServer() {
         server.send(200, "application/json", space.c_str());
     });
     server.on("/frequency", HTTP_OPTIONS, sendCors);
-    server.on("/frequency", HTTP_POST, []() {
-        if (!authControl())
-            return;
-        if (server.hasArg("plain")) {
-            DynamicJsonDocument request(512);
-
-            DeserializationError error = deserializeJson(request, server.arg("plain"));
-            if (error) {
-                Serial.println(error.c_str());
-            }
-
-            globalConfiguration["sensors"]["readFreq"]["value"] = request["frequency"].as<int>();
-
-            saveConfig();
-            passCors();
-            server.send(200, "text/plain", "read frequency changed");
-        } else {
-            server.send(400, "mal formato de peticion");
-        }
-    });
     server.on("/logs", []() {
         if (!authControl()) return;
         DateTime now = RTC.now();
