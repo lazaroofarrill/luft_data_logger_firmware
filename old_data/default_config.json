@@ -1,0 +1,31 @@
+{
+  "use_default": true,
+  "ssid": "",
+  "pswd": "",
+  "mode": "",
+  "user": {
+    "name": "",
+    "pswd": ""
+  },
+  "default": {
+    "mode": "AP",
+    "ssid": "ESTMET-AP",
+    "pswd": "",
+    "user": {
+      "name": "admin",
+      "pswd": "admin"
+    },
+    "sensors": {
+      "readFreq": 15,
+      "stateCheck": 1,
+      "saveFreq": 15,
+      "dataTransmission": 12,
+      "memoryWarning": 0.8
+    }
+  },
+  "details": {
+    "id": "EST-MET HURACAN",
+    "softVersion": 0.009,
+    "serialNumber": "ESTMET123456"
+  }
+}
