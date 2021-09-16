@@ -69,13 +69,18 @@ void logData(String data) {
     path += "-";
     path += now.day();
 
+    String path2 = "/logs/global";
+
     File log = SD.open(path, FILE_APPEND);
-    if (!log) {
+    File log2 = SD.open(path2, FILE_APPEND);
+    if (!log || !log2) {
         Serial.println("couldn't open file for writing");
         return;
     }
     log.println(data);
+    log2.println(data);
     Serial.println("data logged succesfully");
     log.close();
+    log2.close();
 }
 
