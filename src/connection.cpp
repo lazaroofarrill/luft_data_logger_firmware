@@ -39,6 +39,20 @@ bool checkAuth() {
     return false;
 }
 
+bool checkWebSocketAuth(const char *token) {
+    String toCheck = token;
+    Serial.println(sessionId);
+    Serial.println(toCheck);
+    if (sessionId.length() != 0) {
+        if (toCheck.indexOf("token=" + sessionId) != -1) {
+            refreshSession = millis();
+            return true;
+        }
+    }
+
+    return false;
+}
+
 
 bool authControl() {
     if (!checkAuth()) {
@@ -92,9 +106,12 @@ void initWifi() {
         IPAddress address = IPAddress();
         IPAddress gateway = IPAddress();
         if (address.fromString(globalConfiguration["ip"].as<String>()) &&
-            gateway.fromString(globalConfiguration["gateway"].as<String>())) {
-            WiFi.softAPConfig(address, gateway, IPAddress(255, 255, 255, 0));
+            gateway.fromString(globalConfiguration["ip"].as<String>())) {
+            WiFi.softAPConfig(address, address, IPAddress(255, 255, 255, 0));
         }
+
+        Serial.println(globalConfiguration["ip"].as<String>());
+        Serial.println(globalConfiguration["gateway"].as<String>());
 
         WiFi.softAP(ssid.c_str(), password.c_str());
         IPAddress myIP = WiFi.softAPIP();
@@ -109,6 +126,7 @@ void sessionWatch() {
     if (lapse / 1000 / 60 > REFRESH_INTERVAL && !sessionId.isEmpty()) {
         Serial.println("Resetting token. Closing current connections");
         sessionId = "";
+        ws.disconnect();
     }
 }
 
@@ -361,6 +379,7 @@ void sendCors() {
 
 void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
     String data = "";
+    String body = "";
     switch (type) {
         case WStype_ERROR:
             break;
@@ -368,6 +387,11 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
             break;
         case WStype_CONNECTED:
             Serial.println("client connected");
+
+//            if (!checkWebSocketAuth((const char *) payload)) {
+//                ws.sendTXT(num, "client not authorized");
+//                ws.disconnect(num);
+//            }
             ws.sendTXT(num, "connected");
             ws.broadcastTXT("I'm broadcasting");
             data += humidityRead();
@@ -390,6 +414,22 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
                 Serial.print(" ");
                 Serial.println(dateTime.timestamp());
                 RTC.adjust(dateTime);
+            } else {
+                if (!checkWebSocketAuth((const char *) payload)) {
+                    ws.sendTXT(num, "client not authorized to such action");
+                    return;
+                }
+                int bs = data.indexOf("<config>");
+                if (bs != -1) {
+                    int be = data.indexOf("</config>");
+                    body = data.substring(bs + 8, be);
+
+                    deserializeJson(globalConfiguration, body);
+                    saveConfig();
+                    ws.sendTXT(num, "Configuration changed");
+                    delay(500);
+                    ESP.restart();
+                }
             }
             break;
         case WStype_BIN:
