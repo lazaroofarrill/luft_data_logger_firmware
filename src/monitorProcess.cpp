@@ -6,12 +6,16 @@
 #include "FileSystem/fileSystem.h"
 
 TaskHandle_t monitorTask = NULL;
-u_long LOG_INTERVAL = 0;
+u_long GENERAL_READ_INTERVAL = 0;
+u_long PRECIPITATION_READ_INTERVAL = 0;
+
+Station station;
 
 void monitorSetup() {
-    LOG_INTERVAL = (long) getNumberVal(globalConfiguration["sensors"]["readFreq"]) * 60 * 1000;
-    Serial.print("Read freq is");
-    Serial.println(LOG_INTERVAL);
+    GENERAL_READ_INTERVAL = globalConfiguration["Settings"]["generalReadDelay"].as<long>() * 60 * 1000;
+    PRECIPITATION_READ_INTERVAL = globalConfiguration["Settings"]["precipitationReadDelay"].as<long>() * 60 * 1000;
+    Serial.print("General read freq is ");
+    Serial.println(GENERAL_READ_INTERVAL);
     humidityStart();
     lightStart();
     pressureStart();
@@ -21,19 +25,29 @@ void monitorSetup() {
 }
 
 [[noreturn]] void monitorLoop(void *param) {
-    TickType_t xLastWakeTime = xTaskGetTickCount();
+    ulong lastGeneral = -GENERAL_READ_INTERVAL, lastPrecipitation = -PRECIPITATION_READ_INTERVAL;
     for (;;) {
         String data = "";
-        data += humidityRead();
-        data += lightRead();
-        data += pressureRead();
-        data += timeRead();
-        logData(data);
-        if (batterySavingActivated && !digitalRead(POWER_PIN)) {
-            esp_deep_sleep(LOG_INTERVAL * 1000);
-        } else {
-            vTaskDelayUntil(&xLastWakeTime, LOG_INTERVAL / portTICK_RATE_MS);
-            xLastWakeTime = xTaskGetTickCount();
+        if (abs((long) millis() - (long) lastGeneral) > GENERAL_READ_INTERVAL) {
+            data += ";windSpeed=" + String(station.velocidad_viento_prueba());
+            data += ";windDirection=" + String(station.dir_viento_prueba());
+            data += ";humidity=" + String(station.humedad_prueba());
+            data += ";radiation=" + String(station.pira_prueba());
+            data += ";pressure=" + String(station.presion_prueba());
+            data += ";evapoTranspiration=" + String(station.evapo_prueba());
+            data += timeRead();
+
+            lastGeneral = millis();
         }
+        if (abs((long) millis() - (long) lastPrecipitation) > PRECIPITATION_READ_INTERVAL) {
+            data += timeRead();
+            data += ";precipitation=" + String(station.precipitationMM_prueba());
+            lastPrecipitation = millis();
+        }
+
+        if (data.length()) {
+            logData(data);
+        }
+        delay(100);
     }
 }

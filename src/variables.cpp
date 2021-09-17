@@ -18,7 +18,7 @@ String Station::Elabora_la_Pregunta() {
     return Trama_Pregunta;
 }
 
-void Pregunta(String Pregunta_Trama) {
+void Station::Pregunta(String Pregunta_Trama) {
     Serial.println(Pregunta_Trama + Canal);
     Serial.flush();
 }
@@ -506,8 +506,11 @@ float Station::pira_prueba() {
     return (random(30, 70) / 2.8);
 }
 
-float Station::epavo_prueba() {
+float Station::evapo_prueba() {
 
     return (random(0, 70) / 2.8);
 }
 
+float Station::precipitationMM_prueba() {
+    return (random(0, 70) / 2.8);
+}

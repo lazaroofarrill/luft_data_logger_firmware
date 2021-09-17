@@ -6,8 +6,8 @@
   "hostname": "station-0",
   "connectionMode": "AP",
   "Settings": {
-    "generalReadDelay": 0,
-    "precipitationReadDelay": 0,
+    "generalReadDelay": 15,
+    "precipitationReadDelay": 15,
     "username": "admin",
     "password": "adminpassword"
   }

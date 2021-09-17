@@ -6,12 +6,13 @@
 
 bool cardMounted = false;
 
-#define SD_PIN 13
+#define SD_PIN 5
 
 void initSDCard() {
     cardMounted = SD.begin(SD_PIN);
+
     if (!cardMounted) {
-        Serial.println("Card mount failed");
+        Serial.println("Couldn't mount card");
         return;
     }
 

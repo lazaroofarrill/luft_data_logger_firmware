@@ -11,6 +11,9 @@
 #include "pressureSensor.h"
 #include "realTimeClock.h"
 #include "Logger/logger.h"
+#include "Logger/variables.h"
+
+extern Station station;
 
 extern TaskHandle_t monitorTask;
 

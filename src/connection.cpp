@@ -388,17 +388,9 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
         case WStype_CONNECTED:
             Serial.println("client connected");
 
-//            if (!checkWebSocketAuth((const char *) payload)) {
-//                ws.sendTXT(num, "client not authorized");
-//                ws.disconnect(num);
-//            }
+
             ws.sendTXT(num, "connected");
             ws.broadcastTXT("I'm broadcasting");
-            data += humidityRead();
-            data += lightRead();
-            data += pressureRead();
-            data += timeRead();
-            logData(data);
 
             break;
         case WStype_TEXT:

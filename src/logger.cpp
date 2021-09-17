@@ -83,4 +83,3 @@ void logData(String data) {
     log.close();
     log2.close();
 }
-

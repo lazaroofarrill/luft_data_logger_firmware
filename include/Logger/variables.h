@@ -148,7 +148,9 @@ public:
 
     float pira_prueba();
 
-    float epavo_prueba();
+    float evapo_prueba();
+
+    float precipitationMM_prueba();
 };
 
 #endif //BACKEND_VARIABLES_H

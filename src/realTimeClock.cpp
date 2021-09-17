@@ -31,6 +31,6 @@ String timeRead() {
     Serial.println(vars);
     Serial.println();
 
-    vars = ",date=\"" + vars + "\"";
+    vars = ";date=\"" + vars + "\"";
     return vars;
 }

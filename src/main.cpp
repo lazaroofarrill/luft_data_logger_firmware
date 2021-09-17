@@ -6,7 +6,7 @@
 
 
 void setup() {
-    Serial.begin(19200);
+    Serial.begin(115200);
     if (!Wire.begin()) {
         Serial.println("Failed to init i2c interface");
     }
@@ -15,6 +15,7 @@ void setup() {
     initFileSystem();
     loadConf();
     serverSetup();
+    monitorSetup();
 }
 
 void loop() {
