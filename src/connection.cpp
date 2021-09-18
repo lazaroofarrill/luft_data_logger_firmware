@@ -196,14 +196,8 @@ void initWebServer() {
     });
     server.on("/frequency", HTTP_OPTIONS, sendCors);
     server.on("/logs", []() {
-        if (!authControl()) return;
-        DateTime now = RTC.now();
-        String path = "/logs/";
-        path += now.year();
-        path += "-";
-        path += now.month();
-        path += "-";
-        path += now.day();
+//        if (!authControl()) return;
+        String path = "/logs/global";
 
         File log = SD.open(path, FILE_READ);
         if (!log) {
@@ -218,8 +212,10 @@ void initWebServer() {
         if (!authControl()) return;
         File root;
         root = SD.open("/logs");
-        delay(2000);
-
+        if (!root) {
+            server.send(500, "Error al borrar logs");
+            return;
+        }
         while (true) {
             File entry = root.openNextFile();
             String localPath;

@@ -32,6 +32,7 @@ void monitorSetup() {
             data += ";windSpeed=" + String(station.velocidad_viento_prueba());
             data += ";windDirection=" + String(station.dir_viento_prueba());
             data += ";humidity=" + String(station.humedad_prueba());
+            data += ";temperature=" + String(station.temp_prueba());
             data += ";radiation=" + String(station.pira_prueba());
             data += ";pressure=" + String(station.presion_prueba());
             data += ";evapoTranspiration=" + String(station.evapo_prueba());
