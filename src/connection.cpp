@@ -85,9 +85,11 @@ void initWifi() {
         if (!globalConfiguration["dhcp"].as<bool>()) {
             IPAddress address = IPAddress();
             IPAddress gateway = IPAddress();
-            if (address.fromString(globalConfiguration["ip"].as<String>()) &&
-                gateway.fromString(globalConfiguration["gateway"].as<String>())) {
 
+            if (address.fromString(globalConfiguration["ip"].as<String>()) &&
+                gateway.fromString(globalConfiguration["ip"].as<String>())) {
+                Serial.print("Using ");
+                Serial.println(address.toString());
                 WiFi.config(address, gateway, IPAddress(255, 255, 255, 0));
             }
         }
