@@ -82,7 +82,7 @@ void initWifi() {
         Serial.println(ssid);
 
         Serial.print("\nStation IP Address:");
-        if (globalConfiguration["dhcp"]) {
+        if (!globalConfiguration["dhcp"].as<bool>()) {
             IPAddress address = IPAddress();
             IPAddress gateway = IPAddress();
             if (address.fromString(globalConfiguration["ip"].as<String>()) &&
