@@ -30,6 +30,7 @@ bool checkAuth() {
             return false;
 
         token += sessionId;
+        Serial.println(server.header("Authorization"));
         if (server.header("Authorization").indexOf(token) != -1) {
             Serial.println("correct auth");
             refreshSession = millis();
@@ -187,7 +188,7 @@ void initWebServer() {
     server.on("/update", HTTP_POST, onFinishUpload, handleUpload);
     server.on("/reset", resetConfig);
     server.on("/storage", HTTP_GET, []() {
-        if (!authControl()) return;
+//        if (!authControl()) return;
         String space = "{";
         space += "\"used\": " + String((double) (SD.usedBytes())) + ",";
         space += "\"total\": " + String((double) (SD.cardSize())) + "}";
@@ -208,12 +209,17 @@ void initWebServer() {
         server.streamFile(log, "text/plain");
         log.close();
     });
-    server.on("/format", []() {
-        if (!authControl()) return;
+    server.on("/format", HTTP_OPTIONS, sendCors);
+    server.on("/format", HTTP_GET, []() {
+        if (!authControl()) {
+            server.send(401, "nop");
+        }
         File root;
         root = SD.open("/logs");
         if (!root) {
-            server.send(500, "Error al borrar logs");
+            passCors();
+            Serial.println("Error during formatting");
+            server.send(500, "text/plain", "Error al borrar logs");
             return;
         }
         while (true) {
@@ -225,11 +231,12 @@ void initWebServer() {
                 break;
             }
             if (!entry.isDirectory()) {
-                SD.remove(String("/logs/") + String(entry.name()));
+                SD.remove(String(entry.name()));
             }
-            delay(1);
         }
-        server.send(200, "Todos los logs han sido borrados");
+        Serial.println("Data removed successfully");
+        passCors();
+        server.send(200, "text/plain", "Todos los logs han sido borrados");
     });
     server.onNotFound([]() {
         passCors();
@@ -383,7 +390,6 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
             break;
         case WStype_CONNECTED:
             Serial.println("client connected");
-
 
             ws.sendTXT(num, "connected");
             ws.broadcastTXT("I'm broadcasting");
