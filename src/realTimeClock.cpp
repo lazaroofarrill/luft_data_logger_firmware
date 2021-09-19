@@ -32,5 +32,6 @@ String timeRead() {
     Serial.println();
 
     vars = ";date=\"" + vars + "\"";
+    vars += ";timestamp=" + String(now.unixtime());
     return vars;
 }

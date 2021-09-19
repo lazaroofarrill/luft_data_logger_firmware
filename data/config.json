@@ -1,6 +1,7 @@
 {
   "ip": "192.168.4.1",
-  "ipMask": "255.255.255.0",
+  "gateway": "192.168.4.1",
+  "dhcp": true,
   "ssid": "station-0",
   "password": "appassword",
   "hostname": "station-0",
