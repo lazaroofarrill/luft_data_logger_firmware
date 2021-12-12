@@ -37,6 +37,7 @@ void monitorSetup() {
             data += ";radiation=" + String(station.pira_prueba());
             data += ";pressure=" + String(station.presion_prueba());
             data += ";evapoTranspiration=" + String(station.evapo_prueba());
+            data += ";rain=" + String(station.precipitationMM_prueba());
             data += timeRead();
 
             lastGeneral = millis();
