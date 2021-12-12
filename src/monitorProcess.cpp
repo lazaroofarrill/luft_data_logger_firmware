@@ -31,6 +31,7 @@ void monitorSetup() {
         if (abs((long) millis() - (long) lastGeneral) > GENERAL_READ_INTERVAL) {
             data += ";windSpeed=" + String(station.velocidad_viento_prueba());
             data += ";windDirection=" + String(station.dir_viento_prueba());
+            data += ";windDirectionDegrees=" + String(station.dir_viento_degrees());
             data += ";humidity=" + String(station.humedad_prueba());
             data += ";temperature=" + String(station.temp_prueba());
             data += ";radiation=" + String(station.pira_prueba());

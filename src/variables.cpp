@@ -486,36 +486,54 @@ float Station::velocidad_viento_prueba() {
 
 String Station::dir_viento_prueba() {
 
-    switch (random(1, 9)) {
-        case 1:
-            return ("norte");
-            break;
-        case 2:
-            return ("sur");
-            break;
-        case 3:
-            return ("este");
-            break;
-        case 4:
-            return ("oeste");
-            break;
-        case 5:
-            return ("noreste");
-            break;
-        case 6:
-            return ("noroeste");
-            break;
-        case 7:
-            return ("sureste");
-            break;
-        case 8:
-            return ("suroeste");
-            break;
-
-
-        default:
-            return ("norte");
-            break;
+//    switch (dir_viento_degrees()) {
+//        case 1:
+//            return ("norte");
+//            break;
+//        case 2:
+//            return ("sur");
+//            break;
+//        case 3:
+//            return ("este");
+//            break;
+//        case 4:
+//            return ("oeste");
+//            break;
+//        case 5:
+//            return ("noreste");
+//            break;
+//        case 6:
+//            return ("noroeste");
+//            break;
+//        case 7:
+//            return ("sureste");
+//            break;
+//        case 8:
+//            return ("suroeste");
+//            break;
+//
+//
+//        default:
+//            return ("norte");
+//            break;
+//    }
+    const float degrees = dir_viento_degrees();
+    if ((degrees >= 337) || (degrees <= 22)) {
+        return "norte";
+    } else if (degrees >= 22 && degrees <= 22 + 45) {
+        return "noreeste";
+    } else if (degrees >= 67 && degrees <= 112) {
+        return "este";
+    } else if (degrees >= 112 && degrees <= 157) {
+        return "sureste";
+    } else if (degrees >= 157 && degrees <= 202) {
+        return "sur";
+    } else if (degrees >= 202 && degrees <= 247) {
+        return "suroeste";
+    } else if (degrees >= 247 && degrees <= 292) {
+        return "oeste";
+    } else if (degrees >= 292) {
+        return "noroeste";
     }
 }
 
