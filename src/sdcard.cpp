@@ -6,7 +6,7 @@
 
 bool cardMounted = false;
 
-#define SD_PIN 5
+#define SD_PIN 2
 
 void initSDCard() {
     cardMounted = SD.begin(SD_PIN);

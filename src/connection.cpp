@@ -411,12 +411,13 @@ void webSocketEvent(byte num, WStype_t type, uint8_t *payload, size_t length) {
                 Serial.println(dateTime.timestamp());
                 RTC.adjust(dateTime);
             } else {
-                if (!checkWebSocketAuth((const char *) payload)) {
-                    ws.sendTXT(num, "client not authorized to such action");
-                    return;
-                }
+                Serial.println("Changing configuration");
                 int bs = data.indexOf("<config>");
                 if (bs != -1) {
+                    if (!checkWebSocketAuth((const char *) payload)) {
+                        ws.sendTXT(num, "client not authorized to such action");
+                        return;
+                    }
                     int be = data.indexOf("</config>");
                     body = data.substring(bs + 8, be);
 

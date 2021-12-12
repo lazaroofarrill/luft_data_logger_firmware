@@ -144,6 +144,8 @@ public:
 
     String dir_viento_prueba();
 
+    float dir_viento_degrees();
+
     float presion_prueba();
 
     float pira_prueba();

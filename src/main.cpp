@@ -16,6 +16,7 @@ void setup() {
     loadConf();
     serverSetup();
     monitorSetup();
+
 }
 
 void loop() {

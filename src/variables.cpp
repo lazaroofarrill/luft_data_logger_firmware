@@ -11,7 +11,9 @@ String Trama = "";           //Guarda temporalmente la repuesta Colectada
 const int time_check = 100;   //Establece el número de milisegundos que se debe esperar para que haya datos disponibles en el puerto serie
 int Canal = 0;
 float Rango_Medicion_Min = 0, Rango_Medicion_Max = 0;
-
+String kk;
+float cc, pepeelpingu;
+float datos[8];
 
 String Station::Elabora_la_Pregunta() {
     String Trama_Pregunta = "&_28673_M_00";
@@ -447,18 +449,39 @@ void Station::Global_Radiation_Wm2() {  //900
 
 
 float Station::temp_prueba() {
-
-    return (random(40, 70) / 2.8);
+    Serial.println("& 28673 M 00100");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = ((110.00 / 65520.00) * cc) - 50.00; //Temperatura
+    datos[0] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 }
 
 float Station::humedad_prueba() {
-
-    return (random(40, 70) / 2.8);
+    Serial.println("& 28673 M 00200");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = ((100.00 / 65520.00) * cc); //Humedad Relativa
+    datos[1] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 }
 
 float Station::velocidad_viento_prueba() {
-
-    return (random(15, 70) / 2.8);
+    Serial.println("& 28673 M 00400");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = (((75.00 / 65520.00) * cc)); //velocidad del viento
+    datos[3] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 }
 
 String Station::dir_viento_prueba() {
@@ -497,13 +520,28 @@ String Station::dir_viento_prueba() {
 }
 
 float Station::presion_prueba() {
+    Serial.println("& 28673 M 00305");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = (((900.00 / 65520.00) * cc) + 300.00); //Presion
+    datos[2] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 
-    return (random(80, 150) / 2.8);
 }
 
 float Station::pira_prueba() {
-
-    return (random(30, 70) / 2.8);
+    Serial.println("& 28673 M 00900");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = (((1400 / 65520.00) * cc)); //radiacion
+    datos[5] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 }
 
 float Station::evapo_prueba() {
@@ -512,5 +550,25 @@ float Station::evapo_prueba() {
 }
 
 float Station::precipitationMM_prueba() {
-    return (random(0, 70) / 2.8);
+    Serial.println("& 28673 M 00620");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = (((6552 / 65520.00) * cc)); //rain
+    datos[6] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
+}
+
+float Station::dir_viento_degrees() {
+    Serial.println("& 28673 M 00500");
+    Trama = "";
+    Trama = Serial.readStringUntil('\n');
+    kk = Trama.substring(Trama.lastIndexOf(" ") + 1, Trama.length() - 1);
+    cc = kk.toFloat();
+    pepeelpingu = (((359.90 / 65520.00) * cc)); //direccion del viento
+    datos[4] = pepeelpingu;
+    delay(10);
+    return pepeelpingu;
 }
